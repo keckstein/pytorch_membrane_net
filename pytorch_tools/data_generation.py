@@ -16,8 +16,8 @@ def _build_equally_spaced_volume_list(
         area_size,
         n_volumes,
         transform_ratio,
-        set_volume=None
-):
+        set_volume=None,
+        displace_positions=0):
     # Components
     spacing = spacing
     half_area_size = (np.array(area_size) / 2).astype(int)
@@ -33,6 +33,9 @@ def _build_equally_spaced_volume_list(
     mg[2] -= int((mg[2].max() + mg[2].min()) / 2)
     mg = mg.reshape(3, np.prod(np.array(mg.shape)[1:]))
     positions = mg.swapaxes(0, 1)
+
+    displacement = np.random.uniform(-displace_positions, displace_positions, positions.shape)
+    positions = displacement + positions
 
     n_transform = int(n_volumes * len(positions) * transform_ratio)
     transform = [True] * n_transform + [False] * (n_volumes * len(positions) - n_transform)
@@ -958,7 +961,8 @@ def _initialize(
         noise_load_dict=None,
         yield_xyz=False,
         n_workers_noise=1,
-        noise_on_channels=None
+        noise_on_channels=None,
+        displace_positions=0
 ):
     assert ((spacing is not None and area_size is not None)
             or areas_and_spacings is not None), 'The areas and spacings have to be specified either with the ' \
@@ -975,7 +979,8 @@ def _initialize(
                 spacing,
                 area_size,
                 n_volumes,
-                transform_ratio
+                transform_ratio,
+                displace_positions
             )
         elif type(area_size[0]) == tuple:
             assert n_volumes == len(area_size)
@@ -986,7 +991,8 @@ def _initialize(
                     asize,
                     1,
                     transform_ratio,
-                    set_volume=idx
+                    set_volume=idx,
+                    displace_positions=0
                 )
         else:
             raise ValueError
@@ -998,7 +1004,8 @@ def _initialize(
                 aas['area_size'],
                 1,
                 transform_ratio,
-                set_volume=aas['vol']
+                set_volume=aas['vol'],
+                displace_positions=0
             )
 
     steps_per_epoch = int(len(transformation_array) / batch_size)
@@ -1110,7 +1117,8 @@ def parallel_data_generator(
         n_workers=1,
         n_workers_noise=1,
         noise_on_channels=None,
-        yield_epoch_info=False
+        yield_epoch_info=False,
+        displace_positions = 0
 ):
     """
 
@@ -1181,7 +1189,8 @@ def parallel_data_generator(
         n_workers=n_workers,
         noise_load_dict=noise_load_dict,
         n_workers_noise=n_workers_noise,
-        noise_on_channels=noise_on_channels
+        noise_on_channels=noise_on_channels,
+        displace_positions=displace_positions
     )
 
     epoch = 0
@@ -1212,7 +1221,8 @@ def parallel_data_generator(
                 noise_load_dict,
                 False,
                 n_workers_noise,
-                noise_on_channels
+                noise_on_channels,
+                displace_positions
             ))
 
         last_of_epoch = False
@@ -1262,7 +1272,8 @@ def parallel_test_data_generator(
         area_size=(256, 256, 256),
         target_shape=(64, 64, 64),
         smooth_output_sigma=0.5,
-        n_workers=1):
+        n_workers=1,
+        displace_positions = None):
     # Start the generator
     n = 0
     results, steps_per_epoch = _initialize(
@@ -1281,7 +1292,8 @@ def parallel_test_data_generator(
         add_pad_mask=False,
         n_workers=n_workers,
         noise_load_dict=None,
-        yield_xyz=True
+        yield_xyz=True,
+        displace_positions = 0
     )
 
     epoch = 0
