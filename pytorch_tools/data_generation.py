@@ -993,6 +993,7 @@ def _initialize(
                     transform_ratio,
                     set_volume=idx,
                     displace_positions
+
                 )
         else:
             raise ValueError
@@ -1005,7 +1006,8 @@ def _initialize(
                 1,
                 transform_ratio,
                 set_volume=aas['vol'],
-                displace_positions=0
+                displace_positions
+
             )
 
     steps_per_epoch = int(len(transformation_array) / batch_size)
