@@ -992,7 +992,7 @@ def _initialize(
                     1,
                     transform_ratio,
                     set_volume=idx,
-                    displace_positions
+                    displace_positions=displace_positions
 
                 )
         else:
@@ -1006,7 +1006,7 @@ def _initialize(
                 1,
                 transform_ratio,
                 set_volume=aas['vol'],
-                displace_positions=16
+                displace_positions=displace_positions
 
             )
 
