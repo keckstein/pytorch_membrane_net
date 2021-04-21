@@ -991,8 +991,7 @@ def _initialize(
                     asize,
                     1,
                     transform_ratio,
-                    displace_positions,
-                    set_volume=idx
+                    set_volume=idx,
 
                 )
         else:
@@ -1005,7 +1004,6 @@ def _initialize(
                 aas['area_size'],
                 1,
                 transform_ratio,
-                displace_positions,
                 set_volume=aas['vol']
 
             )
