@@ -992,7 +992,7 @@ def _initialize(
                     1,
                     transform_ratio,
                     set_volume=idx,
-                    displace_positions=0
+                    displace_positions
                 )
         else:
             raise ValueError
